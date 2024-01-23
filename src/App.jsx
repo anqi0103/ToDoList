@@ -20,6 +20,25 @@ export default function App() {
     setNewItem("")
   }
 
+  // update the id of the todo, which is completed
+  function toggleTodo(id, completed) {
+    setTodos(currentTodo => {
+      return currentTodo.map(todo => {
+        if (todo.id == id) {
+          // `todo.completed = completed` because the state is immutable, we could only create a brand new array
+          return { ...todo, completed}
+        }
+        return todo
+      })
+    })
+  }
+
+  function deleteTodo(id) {
+    setTodos(currentTodo => {
+      return currentTodo.filter(todo => todo.id !== id)
+    })
+  }
+
   return <>
     <form onSubmit={handleSubmit} className="new-item-form">
       <div className="form-row">
@@ -35,14 +54,20 @@ export default function App() {
     </form>
     <h1 className="header">Todo List</h1>
     <ul className="list">
+      {todos.length === 0 && "Adding Something on your todo list!!!"}
       {/* Using {} inside of HTML means that it is JavaScript code */}
       {todos.map(todo => {
         return <li key={todo.id}>
           <label>
-            <input type="checkbox" defaultChecked={todo.completed}/>
+            <input type="checkbox" onChange={e => toggleTodo(todo.id, e.target.completed)}/>
             {todo.title}
           </label>
-          <button className="btn btn-danger">Delete</button>
+          <button 
+            onClick={() => deleteTodo(todo.id)} 
+            className="btn btn-danger"
+          >
+            Delete
+          </button>
         </li>
       })}
       
